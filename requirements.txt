@@ -50,7 +50,7 @@ blinker
 bluepy
 bottle
 Bottleneck
-Brlapi==0.8.5
+#Brlapi==0.8.5
 Brotli
 catfish
 cbor
