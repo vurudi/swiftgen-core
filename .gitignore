@@ -47,7 +47,7 @@ media/
 __pycache__/
 
 # Media folder and its contents
-media/
+#media/
 
 
 # IntelliJ
