@@ -71,7 +71,7 @@ def create_job_profile(request, identifier):
             gallery.save()
 
             print("Data saved successfully!")
-            return redirect('IntroHome')  # Replace with your actual URL name
+            return redirect('edit_service')  # Replace with your actual URL name
 
     else:
         overview_form = OverviewForm()

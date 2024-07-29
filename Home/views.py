@@ -144,23 +144,27 @@ def edit_profile(request, identifier):
     return render(request, 'edit_profile.html', context)
 
 # View function for viewing public profile of a user
-@login_required()  # Requiring login for access
+
+@login_required
 def view_profile_public(request, username):
-    user = get_object_or_404(User, username=username)  # Getting the user object
-    user_profile, created = UserProfile.objects.get_or_create(user=user)
-    user_service_profiles = Overview.objects.filter(user=user)
-    seller_profile, created = UserProfile.objects.get_or_create(user=user_profile.user)
-    u, created = UserProfile.objects.get_or_create(user=request.user)
-    re_profile = UserProfile.objects.get(user=request.user)
-
-    # Getting reviews for the seller profile
-    profile_reviews = RatingSeller.objects.filter(seller=seller_profile)
-    total_review_sum = sum(review.review_rating for review in profile_reviews)
-    reviewer_profile_usr = [review.reviewer.user for review in profile_reviews]
+    # Getting the user object
+    user = get_object_or_404(User, username=username)
     
-
+    # Getting or creating the user profile
+    user_profile, created = UserProfile.objects.get_or_create(user=user)
+    
+    # Fetching the service profiles related to the user
+    user_service_profiles = Overview.objects.filter(user=user)
+    
+    # Getting the current logged-in user's profile
+    re_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    
+    # Getting reviews for the seller profile
+    profile_reviews = RatingSeller.objects.filter(seller=user_profile)
+    total_review_sum = sum(review.review_rating for review in profile_reviews)
+    
     # Calculating overall rating for the seller profile
-    user_profile.overall_rating = round(total_review_sum / profile_reviews.count()) if profile_reviews.count() > 0 else 0
+    user_profile.overall_rating = round(total_review_sum / profile_reviews.count(), 1) if profile_reviews.count() > 0 else 0
     user_profile.save()
 
     # Handling form submission for adding/editing reviews
@@ -168,7 +172,7 @@ def view_profile_public(request, username):
         rating_value = request.POST.get('rg1')
         title = request.POST.get('review_title')
         review_text = request.POST.get('review_message')
-        existing_review = RatingSeller.objects.filter(seller=seller_profile, reviewer=re_profile).first()
+        existing_review = RatingSeller.objects.filter(seller=user_profile, reviewer=re_profile).first()
 
         if existing_review:
             existing_review.review_rating = rating_value
@@ -177,20 +181,20 @@ def view_profile_public(request, username):
             existing_review.save()
         else:
             RatingSeller.objects.create(
-                seller=seller_profile,
+                seller=user_profile,
                 reviewer=re_profile,
                 review_rating=rating_value,
                 title=title,
                 review=review_text
             )
 
-    # Updating context with necessary data for rendering the profile
+    # Preparing the context with necessary data for rendering the profile
     context = {
         'user_profile': user_profile,
         'user_service_profiles': user_service_profiles,
         'profile_reviews': profile_reviews,
         'count_review': profile_reviews.count(),
-        'reviewer_profile_usr': reviewer_profile_usr,
+        'profile_image_url': user_profile.profile_image.url if user_profile.profile_image and hasattr(user_profile.profile_image, 'url') else None,
     }
 
     return render(request, 'view_profile_public.html', context)
