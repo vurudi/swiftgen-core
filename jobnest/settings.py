@@ -33,13 +33,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+     "daphne",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'bootstrap5',
+    #'django_bootstrap5',
+    'django_bootstrap5',
     'accounts',
     'Home',
     'Services',
@@ -47,7 +49,7 @@ INSTALLED_APPS = [
     'Orders',
     'UserDashboard',
     'Chating',
-    "daphne",
+    'whitenoise',
     "channels",
 ]
 
@@ -57,6 +59,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -79,7 +82,7 @@ TEMPLATES = [
         },
     },
 ]
-
+ASGI_APPLICATION = "jobnest.asgi.application"
 WSGI_APPLICATION = 'jobnest.wsgi.application'
 
 
@@ -114,7 +117,8 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 
 
-TIME_ZONE = 'Asia/Kolkata'
+TIME_ZONE = 'Africa/Nairobi'
+
 
 
 USE_I18N = True
@@ -128,6 +132,21 @@ LOGOUT_REDIRECT_URL = '/'
 # media  files (images, pdf) upload directory
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    # Add any additional static file directories here, or leave empty
+]
+
+#STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'staticfiles')
+
+
+
+
 
 
 
